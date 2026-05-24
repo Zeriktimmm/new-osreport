@@ -4,141 +4,331 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Фотоотчёт ОС</title>
-  
   <meta name="theme-color" content="#2563eb">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  
   <style>
-    :root {
-      --primary: #3b82f6;
-      --primary-dark: #2563eb;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text: #1e293b;
-      --border: #cbd5e1;
-      --danger: #ef4444;
-    }
-    
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding-bottom: 30px; -webkit-user-select: none; user-select: none; }
-    
-    /* Шапка экранов */
-    .navbar {
-      background: var(--card-bg); height: 60px; display: flex; align-items: center; 
-      justify-content: space-between; padding: 0 16px; border-bottom: 1px solid var(--border);
-      position: sticky; top: 0; z-index: 90;
-    }
+    :root { --primary: #3b82f6; --bg: #f8fafc; --card-bg: #ffffff; --text: #1e293b; --border: #cbd5e1; --danger: #ef4444; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 30px; }
+    .navbar { background: var(--card-bg); height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 90; }
     .navbar h1 { font-size: 1.15rem; font-weight: 600; }
-    
-    /* Кнопки */
-    .btn-create {
-      background: var(--primary); color: white; border: none; padding: 6px 14px;
-      border-radius: 20px; font-weight: 600; font-size: 0.85rem; cursor: pointer;
-      display: flex; align-items: center; gap: 4px;
-    }
-    .btn-create:active { background: var(--primary-dark); }
-    
+    .btn-create { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; }
     .top-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 16px; }
-    .btn-action {
-      background: var(--primary); color: white; border: none; padding: 10px;
-      border-radius: 6px; font-weight: 600; font-size: 0.9rem; text-align: center; cursor: pointer;
-    }
-    .btn-action:active { background: var(--primary-dark); }
-    
-    /* Стили выпадающего списка */
+    .btn-action { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; text-align: center; cursor: pointer; }
     .selector-group { background: var(--card-bg); margin: 0 16px 12px 16px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: space-between; }
-    .selector-group label { font-size: 0.85rem; font-weight: 600; color: #475569; }
-    .custom-select {
-      border: 1px solid var(--border); background: #f8fafc; padding: 6px 24px 6px 10px;
-      font-size: 0.9rem; font-weight: 600; border-radius: 4px; color: var(--text);
-      appearance: none; -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 6px center; background-size: 14px;
-    }
-
-    /* Экран Главная: Пустое состояние */
-    .empty-state {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      margin-top: 140px; color: #94a3b8; text-align: center; gap: 16px;
-    }
-    .empty-icon {
-      width: 80px; height: 80px; background: #e2e8f0; border-radius: 16px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .empty-icon svg { width: 40px; height: 40px; fill: #64748b; }
-    .empty-state p { font-size: 1.1rem; font-weight: 600; color: #64748b; }
-    
-    /* Список сохраненных отчетов на главной */
+    .custom-select { border: 1px solid var(--border); padding: 6px 10px; font-size: 0.9rem; font-weight: 600; border-radius: 4px; }
+    .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 140px; color: #94a3b8; gap: 16px; }
     .reports-list { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-    .report-card {
-      background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
-      padding: 14px; display: flex; justify-content: space-between; align-items: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-    }
-    .report-info h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; color: #0f172a; }
-    .report-info p { font-size: 0.8rem; color: #64748b; font-weight: 500; }
+    .report-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; justify-content: space-between; align-items: center; }
     .report-card-actions { display: flex; gap: 8px; }
-    .btn-icon {
-      width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 6px;
-      display: flex; align-items: center; justify-content: center; background: #f8fafc; cursor: pointer;
-    }
-
-    /* Модульная таблица создания фотоотчета */
+    .btn-icon { padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; background: #f8fafc; cursor: pointer; font-weight: bold; }
     .table-container { margin: 0 16px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-    .table-header {
-      display: grid; grid-template-columns: 0.5fr 1.2fr 1.4fr 1.4fr; background: #f1f5f9;
-      border-bottom: 1px solid var(--border); text-align: center; font-size: 0.7rem; font-weight: 700; color: #475569;
-    }
-    .table-header div { padding: 8px 2px; display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--border); }
+    .table-header { display: grid; grid-template-columns: 0.5fr 1.2fr 1.4fr 1.4fr; background: #f1f5f9; border-bottom: 1px solid var(--border); text-align: center; font-size: 0.75rem; font-weight: 700; }
+    .table-header div { padding: 8px 2px; border-right: 1px solid var(--border); }
     .table-header div:last-child { border-right: none; }
-    
-    .table-row {
-      display: grid; grid-template-columns: 0.5fr 1.2fr 1.4fr 1.4fr; border-bottom: 1px solid #e2e8f0; min-height: 75px;
-    }
+    .table-row { display: grid; grid-template-columns: 0.5fr 1.2fr 1.4fr 1.4fr; border-bottom: 1px solid #e2e8f0; min-height: 75px; }
     .table-row:last-child { border-bottom: none; }
-    
-    .cell {
-      display: flex; align-items: center; justify-content: center; padding: 4px;
-      border-right: 1px solid #e2e8f0; position: relative; font-size: 0.85rem; font-weight: 600;
-    }
+    .cell { display: flex; align-items: center; justify-content: center; padding: 4px; border-right: 1px solid #e2e8f0; font-size: 0.85rem; }
     .cell:last-child { border-right: none; }
-    
-    .cell-input {
-      width: 100%; height: 100%; border: none; font-size: 0.8rem; font-weight: 600;
-      text-align: center; color: var(--text); background: transparent; outline: none;
-    }
-    .cell-photo {
-      width: 100%; height: 65px; border-radius: 4px; background: #f8fafc;
-      border: 1px dashed var(--border); display: flex; align-items: center; justify-content: center;
-      cursor: pointer; background-position: center; background-size: cover; background-repeat: no-repeat;
-    }
-    .cell-photo svg { width: 20px; height: 20px; fill: #94a3b8; }
-    .cell-photo.has-img svg { display: none; }
-    .cell-photo.has-img { border-style: solid; border-color: #10b981; }
-
-    /* Кнопка добавления строк под таблицей */
-    .add-row-container { margin: 12px 16px; text-align: center; }
-    .btn-add-row {
-      width: 100%; background: #f1f5f9; color: #475569; border: 1px dashed var(--border);
-      padding: 12px; border-radius: 6px; font-weight: 600; font-size: 0.9rem; cursor: pointer;
-    }
-    .btn-add-row:active { background: #e2e8f0; }
-
-    /* Оверлей Модуля Камеры */
-    #camera-overlay {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: black; z-index: 9999; display: none; flex-direction: column;
-    }
+    .cell-input { width: 100%; height: 100%; border: none; text-align: center; outline: none; font-weight: 600; }
+    .cell-photo { width: 100%; height: 65px; border-radius: 4px; background: #f8fafc; border: 1px dashed var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; background-position: center; background-size: cover; background-repeat: no-repeat; font-size: 0.75rem; color: #64748b; }
+    .cell-photo.has-img { border-style: solid; border-color: #10b981; color: transparent; }
+    .add-row-container { margin: 12px 16px; }
+    .btn-add-row { width: 100%; background: #f1f5f9; border: 1px dashed var(--border); padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    #camera-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 9999; display: none; flex-direction: column; }
     #video-preview { width: 100%; height: 100%; object-fit: cover; }
-    .scanner-frame-container {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      display: flex; align-items: center; justify-content: center; pointer-events: none;
-    }
+    .scanner-frame-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none; }
     .scanner-mask { position: absolute; width: 100%; height: 100%; box-shadow: inset 0 0 0 2000px rgba(0,0,0,0.6); }
-    .scanner-box { position: relative; width: 280px; height: 140px; border: 3px solid #3b82f6; border-radius: 4px; }
-    .scanner-tip { position: absolute; bottom: -35px; left: 0; width: 100%; text-align: center; color: white; font-size: 0.85rem; font-weight: bold; }
-    .camera-controls { position: absolute; bottom: 30px; left: 0; width: 100%; display: flex; justify-content: space-around; align-items: center; padding: 0 20px; }
-    .shutter
+    .scanner-box { position: relative; width: 280px; height: 140px; border: 3px solid #3b82f6; }
+    .camera-controls { position: absolute; bottom: 30px; left: 0; width: 100%; display: flex; justify-content: space-around; align-items: center; }
+    .shutter-btn { width: 66px; height: 66px; background: white; border-radius: 50%; border: 5px solid #cbd5e1; cursor: pointer; }
+    .cancel-cam-btn { color: white; background: rgba(255,255,255,0.2); border: none; padding: 10px 16px; border-radius: 20px; }
+  </style>
+</head>
+<body>
+
+  <div id="screen-main">
+    <div class="navbar">
+      <h1>Главная</h1>
+      <button class="btn-create" onclick="openCreateScreen()">+ Создать</button>
+    </div>
+    <div id="main-empty" class="empty-state">
+      <p>У вас нет документов</p>
+    </div>
+    <div id="reports-list" class="reports-list" style="display: none;"></div>
+  </div>
+
+  <div id="screen-create" style="display: none;">
+    <div class="navbar">
+      <span style="font-weight: 600; cursor: pointer;" onclick="closeCreateScreen()">← Назад</span>
+      <h1>Создание отчета</h1>
+      <div></div>
+    </div>
+    
+    <div class="top-actions">
+      <button class="btn-action" onclick="saveCurrentReport()">Сохранить</button>
+      <button class="btn-action" style="background: #10b981;" onclick="exportToExcel()">Поделиться</button>
+    </div>
+
+    <div class="selector-group">
+      <label>Тип отчета:</label>
+      <select id="report-type-select" class="custom-select">
+        <option value="Списание">Списание</option>
+        <option value="Реализация">Реализация</option>
+        <option value="Благотворительность">Благотворительность</option>
+      </select>
+    </div>
+
+    <div class="table-container">
+      <div class="table-header">
+        <div>№</div>
+        <div>Инв. номер</div>
+        <div>Фото инв.</div>
+        <div>Общий вид</div>
+      </div>
+      <div id="dynamic-rows"></div>
+    </div>
+
+    <div class="add-row-container">
+      <button class="btn-add-row" onclick="addNewBlankRow()">➕ Добавить позицию</button>
+    </div>
+  </div>
+
+  <div id="camera-overlay">
+    <video id="video-preview" autoplay playsinline></video>
+    <div class="scanner-frame-container" id="scanner-frame-wrapper">
+      <div class="scanner-mask"></div>
+      <div class="scanner-box"></div>
+    </div>
+    <div class="camera-controls">
+      <button class="cancel-cam-btn" onclick="stopCamera()">Отмена</button>
+      <button class="shutter-btn" onclick="takeSnapshot()"></button>
+      <div style="width: 70px;"></div>
+    </div>
+  </div>
+
+  <canvas id="hidden-canvas" style="display:none;"></canvas>
+
+  <script>
+    // Глобальный перехватчик ошибок для отладки на телефонах
+    window.onerror = function(msg, url, line) {
+      alert("Ошибка в коде: " + msg + "\nСтрока: " + line);
+      return false;
+    };
+
+    let savedReports = []; 
+    let currentRows = []; 
+    let activeCameraTarget = { rowIndex: null, type: null }; 
+    let streamInstance = null;
+
+    function resetTable() {
+      document.getElementById('dynamic-rows').innerHTML = '';
+      currentRows = [];
+      addNewBlankRow();
+    }
+    
+    function addNewBlankRow() {
+      const index = currentRows.length;
+      currentRows.push({ invNumber: '', photoInv: null, photoGen: null });
+      
+      const container = document.getElementById('dynamic-rows');
+      const row = document.createElement('div');
+      row.className = 'table-row';
+      row.innerHTML = `
+        <div class="cell" style="color:#64748b;">${index + 1}</div>
+        <div class="cell">
+          <input type="text" class="cell-input" placeholder="Нажмите.." oninput="currentRows[${index}].invNumber=this.value">
+        </div>
+        <div class="cell">
+          <div class="cell-photo" id="p-inv-${index}" onclick="triggerCamera(${index}, 'inv')">[Фото]</div>
+        </div>
+        <div class="cell">
+          <div class="cell-photo" id="p-gen-${index}" onclick="triggerCamera(${index}, 'gen')">[Фото]</div>
+        </div>
+      `;
+      container.appendChild(row);
+    }
+
+    function openCreateScreen() {
+      document.getElementById('screen-main').style.display = 'none';
+      document.getElementById('screen-create').style.display = 'block';
+      resetTable();
+    }
+
+    function closeCreateScreen() {
+      document.getElementById('screen-main').style.display = 'block';
+      document.getElementById('screen-create').style.display = 'none';
+    }
+    
+    function saveCurrentReport() {
+      const filled = currentRows.filter(r => r.invNumber || r.photoInv || r.photoGen);
+      if (!filled.length) {
+        alert("Заполните хотя бы одну строку");
+        return;
+      }
+      savedReports.unshift({
+        id: Date.now(),
+        type: document.getElementById('report-type-select').value,
+        count: filled.length,
+        date: new Date().toLocaleDateString('ru-RU'),
+        data: [...currentRows]
+      });
+      renderReportsList();
+      closeCreateScreen();
+    }
+
+    function renderReportsList() {
+      const empty = document.getElementById('main-empty');
+      const list = document.getElementById('reports-list');
+      
+      if (!savedReports.length) {
+        empty.style.display = 'flex';
+        list.style.display = 'none';
+        return;
+      }
+      
+      empty.style.display = 'none';
+      list.style.display = 'flex';
+      list.innerHTML = '';
+      
+      savedReports.forEach(rep => {
+        const card = document.createElement('div');
+        card.className = 'report-card';
+        card.innerHTML = `
+          <div>
+            <h3>${rep.type}</h3>
+            <p>Кол-во: ${rep.count}</p>
+            <p>${rep.date}</p>
+          </div>
+          <div class="report-card-actions">
+            <button class="btn-icon" style="color:#10b981;" onclick="shareDirectReport(${rep.id})">Excel</button>
+            <button class="btn-icon" style="color:var(--danger);" onclick="deleteReport(${rep.id})">Удалить</button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function deleteReport(id) {
+      if (confirm("Удалить?")) {
+        savedReports = savedReports.filter(r => r.id !== id);
+        renderReportsList();
+      }
+    }
+    
+    async function triggerCamera(rowIndex, type) {
+      activeCameraTarget = { rowIndex, type };
+      document.getElementById('scanner-frame-wrapper').style.display = (type === 'inv') ? 'flex' : 'none';
+      document.getElementById('camera-overlay').style.display = 'flex';
+      try {
+        streamInstance = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: 1280, height: 720 },
+          audio: false
+        });
+        document.getElementById('video-preview').srcObject = streamInstance;
+      } catch (err) {
+        alert("Камера недоступна. Убедитесь, что сайт открыт по HTTPS.");
+        stopCamera();
+      }
+    }
+
+    function stopCamera() {
+      if (streamInstance) {
+        streamInstance.getTracks().forEach(t => t.stop());
+      }
+      document.getElementById('camera-overlay').style.display = 'none';
+    }
+    
+    function takeSnapshot() {
+      const video = document.getElementById('video-preview');
+      const canvas = document.getElementById('hidden-canvas');
+      const ctx = canvas.getContext('2d');
+      
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      const base64Img = canvas.toDataURL('image/jpeg', 0.55);
+      const target = currentRows[activeCameraTarget.rowIndex];
+      
+      if (activeCameraTarget.type === 'inv') target.photoInv = base64Img;
+      else target.photoGen = base64Img;
+      
+      const el = document.getElementById(p-${activeCameraTarget.type}-${activeCameraTarget.rowIndex});
+      el.style.backgroundImage = url(${base64Img});
+      el.classList.add('has-img');
+      stopCamera();
+    }
+
+    function exportToExcel() {
+      const items = currentRows.filter(r => r.invNumber || r.photoInv || r.photoGen);
+      if (!items.length) {
+        alert("Таблица пуста");
+        return;
+      }
+      buildExcelAndShare(items, document.getElementById('report-type-select').value);
+    }
+
+    function shareDirectReport(id) {
+      const rep = savedReports.find(r => r.id === id);
+      if (rep) {
+        buildExcelAndShare(rep.data.filter(r => r.invNumber || r.photoInv || r.photoGen), rep.type);
+      }
+    }
+
+    async function buildExcelAndShare(validItems, typeName) {
+      try {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Отчет ОС');
+        
+        worksheet.columns = [
+          { header: '№', key: 'idx', width: 6 },
+          { header: 'Инвентарный номер', key: 'invNum', width: 22 },
+          { header: 'Фото инвентарного', key: 'imgInv', width: 32 },
+          { header: 'Общий вид', key: 'imgGen', width: 32 }
+        ];
+        
+        for (let i = 0; i < validItems.length; i++) {
+          const item = validItems[i];
+          const rNum = i + 2;
+          const r = worksheet.getRow(rNum);
+          
+          r.getCell(1).value = i + 1;
+          r.getCell(2).value = item.invNumber || '';
+          r.height = 100;
+          
+          if (item.photoInv) {
+            worksheet.addImage(workbook.addImage({ base64: item.photoInv, extension: 'jpeg' }), {
+              tl: { col: 2.1, row: rNum - 0.9 },
+              ext: { width: 210, height: 120 }
+            });
+          }
+          if (item.photoGen) {
+            worksheet.addImage(workbook.addImage({ base64: item.photoGen, extension: 'jpeg' }), {
+              tl: { col: 3.1, row: rNum - 0.9 },
+              ext: { width: 210, height: 120 }
+            });
+          }
+        }
+        
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const fName = ${typeName}_${new Date().toISOString().slice(0,10)}.xlsx;
+        const file = new File([blob], fName, { type: blob.type });
+        
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: typeName });
+        } else {
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = fName;
+          link.click();
+        }
+      } catch (err) {
+        alert("Ошибка генерации Excel: " + err.message);
+      }
+    }
+  </script>
+</body>
+</html>
